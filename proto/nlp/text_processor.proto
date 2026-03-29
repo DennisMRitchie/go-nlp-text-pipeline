@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package nlp;
+
+option go_package = "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp";
+
+service TextProcessor {
+    rpc ProcessText(ProcessRequest) returns (ProcessResponse);
+    rpc BatchProcess(BatchRequest) returns (BatchResponse);
+}
+
+message ProcessRequest {
+    string text = 1;
+    string task = 2; // classify, sentiment, summarize, ner
+}
+
+message ProcessResponse {
+    string result = 1;
+    float64 confidence = 2;
+    map<string, string> metadata = 3;
+}
+
+message BatchRequest {
+    repeated string texts = 1;
+    string task = 2;
+}
+
+message BatchResponse {
+    repeated ProcessResponse results = 1;
+}
