@@ -1,70 +1,75 @@
 package service
 
 import (
-    "context"
-    "sync"
-    "time"
+	"context"
+	"sync"
+	"time"
 
-    "github.com/DennisMRitchie/go-nlp-text-pipeline/internal/model"
-    "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/model"
+	pb "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp"
 )
 
 type Processor struct{}
 
 func NewProcessor() *Processor {
-    return &Processor{}
+	return &Processor{}
 }
 
-func (p *Processor) Process(ctx context.Context, req *model.TextRequest) (*nlp.ProcessResponse, error) {
-    start := time.Now()
+// Process обрабатывает один текст (симуляция NLP-задачи)
+func (p *Processor) Process(ctx context.Context, req *model.TextRequest) (*pb.ProcessResponse, error) {
+	start := time.Now()
 
-    // Simulate heavy NLP work with concurrency-friendly design
-    // In real project you would call Python ML service via gRPC or HTTP
-    result := simulateNLP(req.Text, req.Task)
+	// Здесь в реальном проекте был бы вызов внешнего ML-сервиса (Python + HuggingFace / vLLM и т.д.)
+	result := simulateNLP(req.Text, req.Task)
 
-    return &nlp.ProcessResponse{
-        Result:     result,
-        Confidence: 0.87,
-        Metadata: map[string]string{
-            "processed_in": time.Since(start).String(),
-            "language":     "en",
-        },
-    }, nil
+	return &pb.ProcessResponse{
+		Result:     result,
+		Confidence: 0.89,
+		Metadata: map[string]string{
+			"processed_in":   time.Since(start).String(),
+			"language":       "en",
+			"task":           req.Task,
+			"model_simulated": "go-nlp-pipeline-v1",
+		},
+	}, nil
 }
 
-func (p *Processor) BatchProcess(ctx context.Context, req *model.BatchRequest) (*nlp.BatchResponse, error) {
-    var wg sync.WaitGroup
-    results := make([]*nlp.ProcessResponse, len(req.Texts))
-    mu := sync.Mutex{}
+// BatchProcess обрабатывает несколько текстов параллельно
+func (p *Processor) BatchProcess(ctx context.Context, req *model.BatchRequest) (*pb.BatchResponse, error) {
+	var wg sync.WaitGroup
+	results := make([]*pb.ProcessResponse, len(req.Texts))
+	mu := sync.Mutex{}
 
-    for i, text := range req.Texts {
-        wg.Add(1)
-        go func(idx int, t string) {
-            defer wg.Done()
-            resp, _ := p.Process(ctx, &model.TextRequest{Text: t, Task: req.Task})
-            mu.Lock()
-            results[idx] = resp
-            mu.Unlock()
-        }(i, text)
-    }
+	for i, text := range req.Texts {
+		wg.Add(1)
+		go func(idx int, t string) {
+			defer wg.Done()
 
-    wg.Wait()
+			resp, _ := p.Process(ctx, &model.TextRequest{Text: t, Task: req.Task})
 
-    return &nlp.BatchResponse{Results: results}, nil
+			mu.Lock()
+			results[idx] = resp
+			mu.Unlock()
+		}(i, text)
+	}
+
+	wg.Wait()
+
+	return &pb.BatchResponse{Results: results}, nil
 }
 
-// Simulate different NLP tasks
+// simulateNLP — симуляция разных NLP задач
 func simulateNLP(text string, task string) string {
-    switch task {
-    case "classify":
-        return "Technology"
-    case "sentiment":
-        return "positive"
-    case "summarize":
-        return "This text discusses advancements in natural language processing using Go for high-throughput services."
-    case "ner":
-        return "Entities: [Go, NLP, Kubernetes]"
-    default:
-        return "processed"
-    }
+	switch task {
+	case "classify":
+		return "Technology & AI"
+	case "sentiment":
+		return "positive"
+	case "summarize":
+		return "Go — отличный язык для создания высокопроизводительных NLP-сервисов с отличной поддержкой concurrency."
+	case "ner":
+		return "ORG: xAI, TECH: Go, NLP, Kubernetes"
+	default:
+		return "text_processed"
+	}
 }
