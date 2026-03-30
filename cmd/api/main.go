@@ -1,63 +1,62 @@
 package main
 
 import (
-    "context"
-    "log"
-    "net"
-    "net/http"
-    "os"
-    "os/signal"
-    "syscall"
-    "time"
+	"context"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-    "github.com/DennisMRitchie/go-nlp-text-pipeline/internal/handler"
-    "github.com/DennisMRitchie/go-nlp-text-pipeline/internal/service"
-    "github.com/gin-gonic/gin"
-    "google.golang.org/grpc"
-    pb "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp"
+	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/handler"
+	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/service"
+	"github.com/NatalieDaw92055/go-nlp-text-pipeline/pkg/logger"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-    processor := service.NewProcessor()
-    h := handler.NewHandler(processor)
+	logger.Init()
+	log := logger.Get()
 
-    // REST API
-    gin.SetMode(gin.ReleaseMode)
-    router := gin.New()
-    router.Use(gin.Recovery())
+	log.Info().Msg("🚀 Starting Go NLP Text Pipeline v1.0")
 
-    v1 := router.Group("/api/v1")
-    {
-        v1.POST("/process", h.ProcessText)
-        v1.POST("/batch", h.BatchProcess)
-    }
+	processor := service.NewProcessor()
+	h := handler.NewHandler(processor)
 
-    srv := &http.Server{
-        Addr:    ":8080",
-        Handler: router,
-    }
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
+	router.Use(gin.Recovery())
 
-    // Graceful shutdown
-    go func() {
-        log.Println("🚀 Go NLP Text Pipeline started on :8080")
-        if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-            log.Fatalf("ListenAndServe: %s\n", err)
-        }
-    }()
+	v1 := router.Group("/api/v1")
+	{
+		v1.POST("/process", h.ProcessText)
+		v1.POST("/batch", h.BatchProcess)
+	}
 
-    // Wait for interrupt signal
-    quit := make(chan os.Signal, 1)
-    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-    <-quit
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
 
-    log.Println("Shutting down server...")
+	go func() {
+		log.Info().Str("port", "8080").Msg("HTTP server started")
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal().Err(err).Msg("Server failed")
+		}
+	}()
 
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
 
-    if err := srv.Shutdown(ctx); err != nil {
-        log.Fatal("Server forced to shutdown:", err)
-    }
+	log.Info().Msg("Shutting down...")
 
-    log.Println("✅ Server exited gracefully")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Error().Err(err).Msg("Forced shutdown")
+	}
+
+	log.Info().Msg("✅ Server stopped gracefully")
 }

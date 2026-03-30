@@ -1,26 +1,48 @@
-# go-nlp-text-pipeline
+# Go NLP Text Pipeline
 
-High-performance concurrent **Go** text processing pipeline with **NLP** focus.
+**High-performance concurrent text processing pipeline in Go** with built-in support for NLP tasks.
 
-### Features
-- ⚡ Concurrent batch processing with goroutines
-- 🔌 REST + gRPC support (proto ready)
-- 📊 OpenTelemetry ready
-- 🛡️ Rate limiting & graceful shutdown
-- 📈 Production-grade structured logging
+Demonstrates production-ready Go backend skills: concurrency, clean architecture, REST + gRPC, Docker, and CI/CD.
 
-### Quick Start
+### ✨ Features
+- ⚡ Fast concurrent batch processing with goroutines
+- 🔌 REST API + ready for gRPC/Protobuf
+- 📦 Batch & single text processing
+- 🐳 Fully Dockerized with docker-compose
+- 📊 Clean Architecture + structured logging
+- 🔍 NLP-focused tasks: classification, sentiment, summarization, NER
+
+### 🚀 Quick Start
+
 ```bash
+# Local run
 make run
-# or
-docker-compose up --build
 
+# Docker
+make docker-up
 
-Example Request
+API Examples
+Process single text:
 
 curl -X POST http://localhost:8080/api/v1/process \
   -H "Content-Type: application/json" \
-  -d '{"text": "Go is awesome for building fast NLP services", "task": "classify"}'
+  -d '{"text": "Go is excellent for building scalable NLP services", "task": "classify"}'
 
-Tech Stack
-Go 1.23 • Gin • gRPC • Protobuf • Docker • Kubernetes-ready
+  Batch processing:
+
+  curl -X POST http://localhost:8080/api/v1/batch \
+  -H "Content-Type: application/json" \
+  -d '{"texts": ["Great product!", "Terrible experience"], "task": "sentiment"}'
+
+  Tech Stack
+
+Go 1.23 (Goroutines, Context, Generics)
+Gin + gRPC
+Docker & Docker Compose
+GitHub Actions CI
+
+Commands
+
+make run — start locally
+make build — build binary
+make docker-up — run with Docker

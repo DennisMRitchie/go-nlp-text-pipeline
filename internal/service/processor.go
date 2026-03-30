@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/model"
-	pb "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp"
+	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/model"
+	pb "github.com/NatalieDaw92055/go-nlp-text-pipeline/proto/nlp"
 )
 
 type Processor struct{}
@@ -26,9 +26,9 @@ func (p *Processor) Process(ctx context.Context, req *model.TextRequest) (*pb.Pr
 		Result:     result,
 		Confidence: 0.89,
 		Metadata: map[string]string{
-			"processed_in":   time.Since(start).String(),
-			"language":       "en",
-			"task":           req.Task,
+			"processed_in":    time.Since(start).String(),
+			"language":        "en",
+			"task":            req.Task,
 			"model_simulated": "go-nlp-pipeline-v1",
 		},
 	}, nil
