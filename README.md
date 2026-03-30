@@ -1,16 +1,18 @@
 # Go NLP Text Pipeline
 
-**High-performance concurrent text processing pipeline in Go** with built-in support for NLP tasks.
+**High-performance concurrent text processing service** written in Go.
 
-Demonstrates production-ready Go backend skills: concurrency, clean architecture, REST + gRPC, Docker, and CI/CD.
+Demonstrates production-ready backend skills: clean architecture, concurrency, dual API design and containerization.
 
 ### ✨ Features
-- ⚡ Fast concurrent batch processing with goroutines
-- 🔌 REST API + ready for gRPC/Protobuf
-- 📦 Batch & single text processing
-- 🐳 Fully Dockerized with docker-compose
-- 📊 Clean Architecture + structured logging
-- 🔍 NLP-focused tasks: classification, sentiment, summarization, NER
+
+- ⚡ **Fast concurrent batch processing** using goroutines and worker pools
+- 🔌 **Dual API**: REST (Gin) + gRPC with Protocol Buffers
+- 📦 **Single & batch** text processing support
+- 🐳 **Fully Dockerized** with multi-stage builds and docker-compose
+- 📊 **Clean Architecture** with clear layer separation
+- 🔍 Supports key NLP tasks: classification, sentiment analysis, summarization, NER
+- 📝 Structured logging with zerolog
 
 ### 🚀 Quick Start
 
@@ -18,31 +20,40 @@ Demonstrates production-ready Go backend skills: concurrency, clean architecture
 # Local run
 make run
 
-# Docker
+Using Docker
 make docker-up
 
-API Examples
-Process single text:
 
+### API Examples
+
+**Single text processing**
+```bash
 curl -X POST http://localhost:8080/api/v1/process \
   -H "Content-Type: application/json" \
-  -d '{"text": "Go is excellent for building scalable NLP services", "task": "classify"}'
+  -d '{
+    "text": "Go is excellent for building scalable NLP services",
+    "task": "classify"
+  }'
 
-  Batch processing:
+Batch processing
 
-  curl -X POST http://localhost:8080/api/v1/batch \
+curl -X POST http://localhost:8080/api/v1/batch \
   -H "Content-Type: application/json" \
-  -d '{"texts": ["Great product!", "Terrible experience"], "task": "sentiment"}'
+  -d '{
+    "texts": ,
+    "task": "sentiment"
+  }'
 
-  Tech Stack
+🛠 Tech Stack
 
-Go 1.23 (Goroutines, Context, Generics)
-Gin + gRPC
+Go 1.23 — Goroutines, Context, Clean Architecture
+Gin + gRPC + Protocol Buffers
 Docker & Docker Compose
-GitHub Actions CI
+Zerolog — Structured logging
 
-Commands
+📋 Make Commands
 
 make run — start locally
+make docker-up — start with Docker
 make build — build binary
-make docker-up — run with Docker
+make test — run tests
