@@ -1,6 +1,6 @@
-module github.com/NatalieDaw92055/go-nlp-text-pipeline
+module github.com/DennisMRitchie/go-nlp-text-pipeline
 
-go 1.26
+go 1.23
 
 require (
 	github.com/gin-gonic/gin v1.10.0

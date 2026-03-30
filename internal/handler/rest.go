@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/model"
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/service"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/model"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/service"
 	"github.com/gin-gonic/gin"
 )
 

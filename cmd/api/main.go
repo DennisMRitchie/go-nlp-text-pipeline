@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/handler"
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/service"
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/pkg/logger"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/handler"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/service"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 

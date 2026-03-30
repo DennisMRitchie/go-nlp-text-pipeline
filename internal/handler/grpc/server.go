@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/service"
-	pb "github.com/NatalieDaw92055/go-nlp-text-pipeline/proto/nlp"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/service"
+	pb "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp"
 	"google.golang.org/grpc"
 )
 

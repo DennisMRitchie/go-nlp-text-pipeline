@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/NatalieDaw92055/go-nlp-text-pipeline/internal/model"
-	pb "github.com/NatalieDaw92055/go-nlp-text-pipeline/proto/nlp"
+	"github.com/DennisMRitchie/go-nlp-text-pipeline/internal/model"
+	pb "github.com/DennisMRitchie/go-nlp-text-pipeline/proto/nlp"
 )
 
 type Processor struct{}
